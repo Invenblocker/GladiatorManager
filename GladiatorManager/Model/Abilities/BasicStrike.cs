@@ -20,29 +20,26 @@ namespace Model
         {
             Skill weaponSkill = null;
             byte toHit = 0;
-            byte damage = 0;
+            byte damage = User.Weapon.Damage;
             switch(User.Weapon.Weight)
             {
                 case 1:
                     weaponSkill = User.Skills.Find(skill => skill.Name == "Light Weapon Proficiency");
                     toHit += 3;
-                    damage = 2;
                     break;
                 case 2:
                     weaponSkill = User.Skills.Find(skill => skill.Name == "Medium Weapon Proficiency");
-                    damage = 4;
                     break;
                 case 3:
                     weaponSkill = User.Skills.Find(skill => skill.Name == "Heavy Weapon Proficiency");
-                    damage = 6;
                     break;
             }
             if(weaponSkill == null)
             {
                 weaponSkill = new Skill("Untrained", "Using a weapon without training.", Stat, 0);
             }
-            toHit += (byte)(weaponSkill.Level * 3 + Die.DieInstance.Roll(20));
-            damage += (byte)(damage + 2 * powerEffort);
+            toHit += (byte)(weaponSkill.Level * 3 + Die.Roll(20));
+            damage += (byte)(2 * powerEffort);
             damage -= target.Armor.Value;
             byte evasion = target.GetDefense(this, Stat.Speed, Stat.Might, toHit, damage);
             if(toHit > evasion)
@@ -62,6 +59,8 @@ namespace Model
                             return (User.FirstName + " attacks " + target.FirstName + ", and deals " + damage + " damage and debilitates them.");
                         case Status.Dead:
                             return (User.FirstName + " attacks " + target.FirstName + ", and deals " + damage + " damage and kills them.");
+                        default:
+                            return (User.FirstName + " attacks " + target.FirstName + ", and deals " + damage + " damage. Something also went wrong.");
                     }
                 }
             }

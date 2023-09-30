@@ -11,7 +11,10 @@ namespace Contracts
         public string FirstName { get; }
         public string LastName { get; }
         public string Nickname { get; }
+        public Gender Gender { get; }
+        public IDescriptor Descriptor { get; }
         public IType Type { get; }
+        public IFocus Focus { get; }
         public Dictionary<Stat, byte> PoolRemaining { get; }
         public Dictionary<Stat, byte> PoolMax { get; }
         public Dictionary<Stat, byte> Edge { get; }

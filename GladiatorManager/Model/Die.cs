@@ -8,33 +8,30 @@ namespace Model
 {
     public class Die
     {
-        private static Die _die;
-        private Random random;
-        public static Die DieInstance
+        private static Random _random;
+        private static Random Random
         {
             get
             {
-                if (_die == null)
+                if( _random == null )
                 {
-                    _die = new Die();
+                    _random = new Random();
                 }
-                return _die;
+                return _random;
             }
         }
 
-        private Die()
+        public static byte Roll(byte sides)
         {
-            random = new Random();
+            return (byte)(Random.Next(sides) + 1);
         }
-
-        public byte Roll(byte sides)
+        public static byte RollFromZero(byte sides)
         {
-            return (byte)(random.Next(sides) + 1);
+            return (byte)(Random.Next(sides));
         }
-
-        public byte RollFromZero(byte sides)
+        public static int RollFromZero(int max)
         {
-            return (byte)(random.Next(sides));
+            return(Random.Next(max));
         }
     }
 }

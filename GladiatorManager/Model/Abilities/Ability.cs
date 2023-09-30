@@ -30,6 +30,6 @@ namespace Model
             _otherEffort = otherEffort;
         }
 
-        public abstract void Use(Gladiator target, byte powerEffort, byte precisionEffort, byte otherEffort);
+        public abstract string Use(Gladiator target, byte powerEffort, byte precisionEffort, byte otherEffort);
     }
 }

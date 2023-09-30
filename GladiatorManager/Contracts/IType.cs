@@ -8,6 +8,9 @@ namespace Contracts
 {
     public interface IType
     {
-        public string Name { get; set; }
+        public string Name { get; }
+        public string[] Nicknames { get; }
+        public Dictionary<Stat, byte> GenerateStartingPools();
+        public Dictionary<Stat, byte> GenerateStartingEdge();
     }
 }

@@ -9,5 +9,8 @@ namespace Contracts
     public interface IDescriptor
     {
         string Name { get; }
+        public string[] Nicknames { get; }
+        public Dictionary<Stat, byte> GenerateStartingPools();
+        public Dictionary<Stat, byte> GenerateStartingEdge();
     }
 }
