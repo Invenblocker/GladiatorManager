@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class FightsForGlory : IFocus
+    public class FightsForGlory : Focus
     {
-        public string Name { get { return "Fights for GLory"; } }
-        public string[] Nicknames
+        public override string Name { get { return "Fights for GLory"; } }
+        public override string[] Nicknames
         {
             get
             {
@@ -19,14 +19,26 @@ namespace Model
             }
         }
 
-        public Dictionary<Stat, byte> GenerateStartingEdge()
+        public override List<Skill> StartingSkills
+        {
+            get
+            {
+                List<Skill> skills = new List<Skill>();
+                skills.Add(new Skill("Medium Weapon Proficiency", "The ability to use Medium Weapons", Stat.Might, 1));
+                return skills;
+            }
+        }
+
+        public override List<Ability> StartingAbilities => throw new NotImplementedException();
+
+        public override Dictionary<Stat, byte> GenerateStartingEdge()
         {
             Dictionary<Stat, byte> edge = new Dictionary<Stat, byte>();
             edge.Add(Stat.Might, 1);
             return edge;
         }
 
-        public Dictionary<Stat, byte> GenerateStartingPools()
+        public override Dictionary<Stat, byte> GenerateStartingPools()
         {
             Dictionary<Stat, byte> pools = new Dictionary<Stat, byte>();
             pools.Add(Stat.Might, 4);

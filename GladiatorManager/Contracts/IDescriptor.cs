@@ -10,6 +10,7 @@ namespace Contracts
     {
         string Name { get; }
         public string[] Nicknames { get; }
+        public ISkill[] SkillModifiers { get; }
         public Dictionary<Stat, byte> GenerateStartingPools();
         public Dictionary<Stat, byte> GenerateStartingEdge();
     }

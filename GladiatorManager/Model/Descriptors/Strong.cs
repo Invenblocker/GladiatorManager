@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class Strong : IDescriptor
+    public class Strong : Descriptor
     {
-        public string Name { get { return "Strong"; } }
+        public override string Name { get { return "Strong"; } }
 
-        public string[] Nicknames
+        public override string[] Nicknames
         {
             get
             {
@@ -19,13 +19,25 @@ namespace Model
                 return nicknames;
             }
         }
-
-        public Dictionary<Stat, byte> GenerateStartingEdge()
+        public override List<Skill> SkillModifiers
         {
-            return (new Dictionary<Stat, byte>());
+            get
+            {
+                List<Skill> skills = new List<Skill>();
+                skills.Add(new Skill("Armor Proficiency", "The ability to use armor", Stat.Might, 1));
+                skills.Add(new Skill("Might Defense", "Using Might to defend oneself from harm", Stat.Might, 1));
+                return skills;
+            }
         }
 
-        public Dictionary<Stat, byte> GenerateStartingPools()
+        public override Dictionary<Stat, byte> GenerateStartingEdge()
+        {
+            Dictionary<Stat, byte> edge = new Dictionary<Stat, byte>();
+            edge.Add(Stat.Might, 1);
+            return edge;
+        }
+
+        public override Dictionary<Stat, byte> GenerateStartingPools()
         {
             Dictionary<Stat, byte> pools = new Dictionary<Stat, byte>();
             pools.Add(Stat.Might, 4);

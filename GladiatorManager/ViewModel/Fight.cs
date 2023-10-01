@@ -10,29 +10,42 @@ namespace ViewModel
 {
     public class Fight
     {
-        private List<Gladiator> participants;
+        private List<Gladiator> _participants;
+        public Gladiator[] Participants
+        {
+            get
+            {
+                Gladiator[] gladiators = new Gladiator[_participants.Count()];
+                for(int i = 0; i < gladiators.Length; i++)
+                {
+                    gladiators[i] = _participants[i];
+                }
+                return gladiators;
+            }
+        }
         private Status target;
         public Fight(Status target, params Gladiator[] participants)
         {
             this.target = target;
-            this.participants = new List<Gladiator>();
-            this.participants.AddRange(participants);
+            this._participants = new List<Gladiator>();
+            this._participants.AddRange(participants);
         }
         
         public Gladiator Run(bool visible)
         {
-            foreach (Gladiator participant in participants)
+            foreach (Gladiator participant in _participants)
             {
                 participant.PoolRemaining = new Dictionary<Stat, byte>();
                 foreach(Stat stat in participant.PoolMax.Keys)
                 {
                     participant.PoolRemaining[stat] = participant.PoolMax[stat];
                 }
+                participant.Status = Status.Hale;
             }
             if(visible)
             {
                 bool first = true;
-                foreach(Gladiator participant in participants)
+                foreach(Gladiator participant in _participants)
                 {
                     if (!first)
                     {
@@ -60,21 +73,21 @@ namespace ViewModel
             }
 
             List<Gladiator> shuffled = new List<Gladiator>();
-            while (participants.Count() > 0)
+            while (_participants.Count() > 0)
             {
-                int index = Die.RollFromZero(participants.Count());
-                shuffled.Add(participants[index]);
-                participants.RemoveAt(index);
+                int index = Die.RollFromZero(_participants.Count());
+                shuffled.Add(_participants[index]);
+                _participants.RemoveAt(index);
             }
-            participants = shuffled;
+            _participants = shuffled;
 
-            while (participants.Count() > 1)
+            while (_participants.Count() > 1)
             {
-                foreach (Gladiator gladiator in participants)
+                foreach (Gladiator gladiator in _participants)
                 {
                     if (gladiator.Status < target)
                     {
-                        string result = gladiator.PerformTurn(participants.Where(x => x != gladiator && x.Status < target));
+                        string result = gladiator.PerformTurn(_participants.Where(x => x != gladiator && x.Status < target));
                         if (visible)
                         {
                             Console.WriteLine(result);
@@ -83,12 +96,12 @@ namespace ViewModel
                     }
                 }
 
-                participants.RemoveAll(x => x.Status >= target);
+                _participants.RemoveAll(x => x.Status >= target);
             }
 
-            if (visible) Console.WriteLine(participants[0].FullName + " wins!");
+            if (visible) Console.WriteLine(_participants[0].FullName + " wins!");
 
-            return (participants[0]);
+            return (_participants[0]);
         }
     }
 }

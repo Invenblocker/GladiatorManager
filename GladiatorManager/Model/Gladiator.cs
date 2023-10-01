@@ -39,7 +39,8 @@ namespace Model
         }
         public Gender Gender { get; set; }
         public IDescriptor Descriptor { get; set; }
-        public IType Type { get; set; }
+        public Type Type { get; set; }
+        IType IGladiator.Type { get { return Type; } }
         public IFocus Focus { get; set; }
         public Dictionary<Stat, byte> PoolRemaining { get; set; }
         public Dictionary<Stat, byte> PoolMax { get; set; }
@@ -115,7 +116,7 @@ namespace Model
             {
                 byte effortCost = 2;
                 Skill armorProf = Skills.Find(skill => skill.Name == "Armor Proficiency");
-                if (armorProf == null || armorProf.Level < Armor.Weight)
+                if (stat == Stat.Speed && (armorProf == null || armorProf.Level < Armor.Weight))
                 {
                     effortCost += Armor.Weight;
                 }
@@ -143,7 +144,7 @@ namespace Model
             byte pool = PoolRemaining[stat];
             byte edge = Edge[stat];
             Skill armorProf = Skills.Find(skill => skill.Name == "Armor Proficiency");
-            if (armorProf == null || armorProf.Level < Armor.Weight)
+            if (stat == Stat.Speed && (armorProf == null || armorProf.Level < Armor.Weight))
             {
                 effortCost += Armor.Weight;
             }
@@ -171,20 +172,20 @@ namespace Model
             {
                 return 0;
             }
-            else;
+            else
             {
-                byte cost = 1;
+                baseCost += 1;
                 byte effortCost = 2;
                 byte edge = Edge[stat];
                 Skill armorProf = Skills.Find(skill => skill.Name == "Armor Proficiency");
-                if (armorProf == null || armorProf.Level < Armor.Weight)
+                if (stat == Stat.Speed && (armorProf == null || armorProf.Level < Armor.Weight))
                 {
                     effortCost += Armor.Weight;
                 }
                 for (byte i = 0; i < Effort; i++)
                 {
-                    cost += effortCost;
-                    if (cost > edge)
+                    baseCost += effortCost;
+                    if (baseCost > edge)
                     {
                         return i;
                     }
@@ -242,24 +243,22 @@ namespace Model
             {
                 value -= PoolRemaining[target];
                 PoolRemaining[target] = 0;
-                Status = Status + 1;
-                if(value > 0)
+
+                Status = Status.Hale;
+                foreach(Stat stat in PoolRemaining.Keys)
                 {
-                    if (PoolRemaining[Stat.Might] > 0)
+                    if (PoolRemaining[stat] >= value)
                     {
-                        Damage(Stat.Might, value);
-                    }
-                    else if (PoolRemaining[Stat.Speed] > 0)
-                    {
-                        Damage(Stat.Speed, value);
-                    }
-                    else if (PoolRemaining[Stat.Intellect] > 0)
-                    {
-                        Damage(Stat.Intellect, value);
+                        PoolRemaining[stat] = (byte)(PoolRemaining[stat] - value);
                     }
                     else
                     {
-                        Status = Status.Dead;
+                        value -= PoolRemaining[stat];
+                        PoolRemaining[stat] = 0;
+                    }
+                    if (PoolRemaining[stat] == 0)
+                    {
+                        Status++;
                     }
                 }
             }
@@ -303,13 +302,20 @@ namespace Model
         public string PerformTurn(IEnumerable<Gladiator> other)
         {
             Gladiator[] others = other.ToArray();
-            Gladiator target = others[Die.RollFromZero(others.Length)];
-            Ability action = Abilities[0];
+            if (others.Length > 0)
+            {
+                Gladiator target = others[Die.RollFromZero(others.Length)];
+                Ability action = Abilities[0];
 
-            byte effort = FreeEffort(action.Stat, action.Cost);
-            Expend(action.Stat, action.Cost, effort);
+                byte effort = FreeEffort(action.Stat, action.Cost);
+                Expend(action.Stat, action.Cost, effort);
 
-            return action.Use(target, effort, 0, 0);
+                return action.Use(target, effort, 0, 0);
+            }
+            else
+            {
+                return (FirstName + " has no target, and skips turn.");
+            }
         }
     }
 }

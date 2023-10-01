@@ -38,9 +38,22 @@ namespace Model
             {
                 weaponSkill = new Skill("Untrained", "Using a weapon without training.", Stat, 0);
             }
-            toHit += (byte)(weaponSkill.Level * 3 + Die.Roll(20));
-            damage += (byte)(2 * powerEffort);
-            damage -= target.Armor.Value;
+            toHit += (byte)(weaponSkill.Level * 3);
+            byte roll = Die.Roll(20);
+            toHit += roll;
+            if(roll >= 17)
+            {
+                damage += (byte)(roll - 17);
+            }
+            damage += (byte)(3 * powerEffort);
+            if (damage > target.Armor.Value)
+            {
+                damage -= target.Armor.Value;
+            }
+            else
+            {
+                damage = 0;
+            }
             byte evasion = target.GetDefense(this, Stat.Speed, Stat.Might, toHit, damage);
             if(toHit > evasion)
             {

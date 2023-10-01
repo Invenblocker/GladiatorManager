@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class Warrior : IType
+    public class Warrior : Type
     {
-        public string Name { get { return "Warrior"; } }
-        public string[] Nicknames
+        public override string Name { get { return "Warrior"; } }
+        public override string[] Nicknames
         {
             get
             {
@@ -18,7 +18,7 @@ namespace Model
                 return nicknames;
             }
         }
-        public Dictionary<Stat, byte> GenerateStartingPools()
+        public override Dictionary<Stat, byte> GenerateStartingPools()
         {
             Dictionary<Stat, byte> pools = new Dictionary<Stat, byte>();
             pools.Add(Stat.Might, 10);
@@ -32,7 +32,7 @@ namespace Model
             }
             return pools;
         }
-        public Dictionary<Stat, byte> GenerateStartingEdge()
+        public override Dictionary<Stat, byte> GenerateStartingEdge()
         {
             Dictionary<Stat, byte> edge = new Dictionary<Stat, byte>();
             if(Die.RollFromZero(6) < 2)
@@ -48,6 +48,22 @@ namespace Model
             edge.Add(Stat.Intellect, 0);
             return edge;
         }
+        public override List<Skill> StartingSkills
+        {
+            get
+            {
+                List<Skill> skills = new List<Skill>();
+                skills.Add(new Skill("Armor Proficiency", "The maximum weight of armor that can be worn without penalty", Stat.Might, 2));
+                skills.Add(new Skill("Light Weapon Proficiency", "The ability to use Light Weapons", Stat.Speed, 1));
+                skills.Add(new Skill("Medium Weapon Proficiency", "The ability to use Medium Weapons", Stat.Might, 1));
+                skills.Add(new Skill("Heavy Weapon Profiency", "The ability to use Heavy Weapons", Stat.Might, 1));
+                return skills;
+            }
+        }
+
+        public override IAbility[] StartingAbilities => throw new NotImplementedException();
+
+        public override IAbility[][] TierAbilities => throw new NotImplementedException();
     }
 
 }

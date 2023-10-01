@@ -12,5 +12,8 @@ namespace Contracts
         public string[] Nicknames { get; }
         public Dictionary<Stat, byte> GenerateStartingPools();
         public Dictionary<Stat, byte> GenerateStartingEdge();
+        public IAbility[] StartingAbilities { get; }
+        public IAbility[][] TierAbilities { get; }
+        public ISkill[] StartingSkills { get; }
     }
 }
